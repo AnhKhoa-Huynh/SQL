@@ -1,0 +1,274 @@
+# Queires
+
+<aside>
+💡 **CHEATSHEET:** [Learn SQL: Queries Cheatsheet | Codecademy](https://www.codecademy.com/learn/learn-sql/modules/learn-sql-queries/cheatsheet)
+
+</aside>
+
+# *Select*
+
+- Select individual columns by their name, separated by a comma.
+
+```sql
+SELECT column1, column2 
+FROM table_name;
+```
+
+---
+
+# *As*
+
+- `[AS](https://www.codecademy.com/resources/docs/sql/commands/as?page_ref=catalog)` is a keyword in SQL that allows you to *rename* a column or table using an alias.
+- When using `AS`, the columns are not being renamed in the table. The aliases only appear in the result.
+
+```sql
+SELECT name AS 'Titles'
+FROM movies;
+```
+
+---
+
+# *Distinct*
+
+- `[DISTINCT](https://www.codecademy.com/resources/docs/sql/commands/select-distinct?page_ref=catalog)` is used to return unique values in the output. It filters out all duplicate values in the specified column(s).
+
+```sql
+SELECT tools 
+FROM inventory;
+```
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cb08f476-7ae1-47d6-82d3-011d6030fd3d/Untitled.png)
+
+```sql
+SELECT **DISTINCT** tools 
+FROM inventory;
+```
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/393078f0-2691-44af-86a5-2d92976f429e/Untitled.png)
+
+---
+
+# *Where*
+
+- We can restrict our query results using the `[WHERE](https://www.codecademy.com/resources/docs/sql/commands/where?page_ref=catalog)` clause in order to obtain only the information we want.
+
+```sql
+-- The statement filters the result set to only include top rated movies (IMDb ratings greater than 8)
+SELECT *
+FROM movies
+WHERE imdb_rating > 8;
+```
+
+- The `WHERE` clause filters the result set to only include rows where the following *condition* is true.
+- `imdb_rating > 8` is the condition. Here, only rows with a value greater than 8 in the `imdb_rating` column will be returned.
+    - `=` equal to `!=` not equal to
+    - `>` greater than and `<` less than
+    - `>=` greater than or equal to and `<=` less than or equal to
+
+---
+
+# *Like I* ‘Se_en’ = [’Seven’, ‘Se7en’]
+
+- `[LIKE](https://www.codecademy.com/resources/docs/sql/operators/like?page_ref=catalog)` can be a useful operator when you want to compare similar values.
+
+```sql
+SELECT * 
+FROM movies
+WHERE name LIKE 'Se_en';
+/* The movies table contains two films with similar titles, ‘Se7en’ and ‘Seven’.
+
+How could we select all movies that start with ‘Se’ and end with ‘en’ and have exactly one character in the middle? */
+```
+
+- `LIKE` is a special operator used with the `WHERE` clause to search for a specific pattern in a column.
+- `name LIKE 'Se_en'` is a condition evaluating the `name` column for a specific pattern.
+- `Se_en` represents a pattern with a *wildcard* character.
+- The `_` means you can substitute any individual character here without breaking the pattern. The names `Seven` and `Se7en` both match this pattern.
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/053088f3-4e6a-4b4a-a5f0-2b4aa006cc89/Untitled.png)
+
+---
+
+# *Like II* ‘A%’
+
+- `%` is a wildcard character that matches zero or more missing letters in the pattern.
+
+```sql
+-- The statement filters the result set to only include movies with names that begin with the letter ‘A’
+SELECT * 
+FROM movies
+WHERE name LIKE 'A%';
+```
+
+```sql
+-- Any movie that contains the word ‘man’ in its name will be returned in the result
+SELECT * 
+FROM movies 
+WHERE name LIKE '%man%';
+-- LIKE is not case sensitive. ‘Batman’ and ‘Man of Steel’ will both appear in the result of the query above
+```
+
+```sql
+-- Select all the information about the movie titles that begin with the word ‘The’
+SELECT * FROM movies
+WHERE name LIKE 'The %';
+-- A **space** is needed
+```
+
+```sql
+-- The query will match any titles that end with ' 100%'
+SELECT *
+FROM books
+WHERE title LIKE '% 100\%';
+```
+
+---
+
+# *IS NULL / IS NOT NULL*
+
+- It is not possible to test for `NULL` values with comparison operators, such as `=` and `!=`.
+- Instead, we will have to use these operators:
+    - `[IS NULL](https://www.codecademy.com/resources/docs/sql/operators/is-null?page_ref=catalog)`
+    - `[IS NOT NULL](https://www.codecademy.com/resources/docs/sql/operators/is-not-null?page_ref=catalog)`
+
+```sql
+-- Filter out for all movies with an IMDb rating
+SELECT name
+FROM movies 
+WHERE imdb_rating IS NOT NULL;
+```
+
+```sql
+-- Filter out for all movies without an IMDb rating
+SELECT name
+FROM movies 
+WHERE imdb_rating IS NULL;
+```
+
+---
+
+# *Between*
+
+- The `[BETWEEN](https://www.codecademy.com/resources/docs/sql/operators/between?page_ref=catalog)` operator is used in a `[WHERE](https://www.codecademy.com/resources/docs/sql/commands/where?page_ref=catalog)` clause to filter the result set within a certain *range*. It accepts two values that are either numbers, text or dates.
+
+```sql
+-- This statement filters the result set to only include movies with years from 1990 up to, and including 1999
+SELECT *
+FROM movies
+WHERE year BETWEEN 1990 AND 1999;
+```
+
+```sql
+-- This statement filters the result set to only include movies with names that begin with the letter ‘A’ up to, but not including ones that begin with ‘J’
+SELECT *
+FROM movies
+WHERE name BETWEEN 'A' AND 'J';
+
+-- However, if a movie has a name of simply ‘J’, it would actually match. This is because BETWEEN goes up to the second value — up to ‘J’. So the movie named ‘J’ would be included in the result set but not ‘Jaws’.
+```
+
+---
+
+# *And*
+
+- Sometimes we want to *combine multiple conditions* in a `[WHERE](https://www.codecademy.com/resources/docs/sql/commands/where?page_ref=catalog)` clause to make the result set more specific and useful.
+- `[AND](https://www.codecademy.com/resources/docs/sql/operators/and?page_ref=catalog)` operator displays a row if *all* the conditions are true.
+
+```sql
+-- This stateme selects all movies made prior to 1985 that are also in the horror genre
+SELECT * FROM movies
+WHERE year < 1985 
+  AND genre = 'horror';
+```
+
+```sql
+SELECT *
+FROM movies
+WHERE year BETWEEN 1970 AND 1979
+  AND imdb_rating > 8;
+```
+
+---
+
+# *Or*
+
+- `[OR](https://www.codecademy.com/resources/docs/sql/operators/or?page_ref=catalog)` operator displays a row if *any* condition is true.
+
+```sql
+-- This statement returns all movies that are either a romance or a comedy
+SELECT *
+FROM movies
+WHERE genre = 'romance'
+   OR genre = 'comedy';
+```
+
+---
+
+# *Order By*
+
+- We can *sort* the results using `[ORDER BY](https://www.codecademy.com/resources/docs/sql/commands/order-by?page_ref=catalog)`, either alphabetically or numerically
+
+```sql
+-- Sort everything by the movie’s title from A through Z
+SELECT *
+FROM movies
+ORDER BY name;
+```
+
+- DESC sorts things in a decreasing order.
+
+```sql
+SELECT *
+FROM movies
+WHERE imdb_rating > 8
+ORDER BY year DESC;
+```
+
+```sql
+-- Ordered highest to lowest by ratings
+SELECT name, year, imdb_rating FROM movies
+ORDER BY imdb_rating DESC;
+```
+
+---
+
+# *Limit*
+
+- `[LIMIT](https://www.codecademy.com/resources/docs/sql/commands/limit?page_ref=catalog)` is a clause that lets you specify the maximum number of rows the result set will have. This saves space on our screen and makes our queries run faster.
+
+```sql
+-- Specifing that the result set can’t have more than 10 rows
+SELECT *
+FROM movies
+LIMIT 10;
+```
+
+```sql
+-- A query that returns the top 3 highest rated movies
+SELECT * FROM movies 
+ORDER BY imdb_rating DESC LIMIT 3;
+```
+
+---
+
+# *Case*
+
+- A `[CASE](https://www.codecademy.com/resources/docs/sql/commands/case?page_ref=catalog)` statement allows us to create different outputs (usually in the `SELECT` statement). It is SQL’s way of handling [if-then](https://en.wikipedia.org/wiki/Conditional_(computer_programming)) logic.
+- Suppose we want to condense the ratings in `movies` to three levels:
+    - *If the rating is above 8, then it is Fantastic.*
+    - *If the rating is above 6, then it is Poorly Received.*
+    - *Else, Avoid at All Costs.*
+
+```sql
+SELECT name,
+ CASE
+  WHEN imdb_rating > 8 THEN 'Fantastic'
+  WHEN imdb_rating > 6 THEN 'Poorly Received'
+  ELSE 'Avoid at All Costs'
+ END
+FROM movies;
+```
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/86a6ac3e-cb64-4803-854a-8502b681cdc6/Untitled.png)
+
+- To shorten the result, we can rename the column to ‘Review’ using `AS`
